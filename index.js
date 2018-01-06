@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const Alexa = require('alexa-sdk');
+const Alexa = require("alexa-sdk");
 
 const GAME_STATES = {
     START: '_STARTSTATE',
@@ -13,23 +13,23 @@ const APP_NAME = 'The Last Coin';
 const APP_ID = undefined;
 
 const newSessionHandlers = {
-    'LaunchRequest': function () {
-        this.handler.state = GAME_STATES.START;
-        this.emitWithState('StartGame', true);
-    },
-    'AMAZON.StartOverIntent': function () {
-        this.handler.state = GAME_STATES.START;
-        this.emitWithState('StartGame', true);
-    },
-    'AMAZON.HelpIntent': function () {
-        this.handler.state = GAME_STATES.HELP;
-        this.emitWithState('helpTheUser', true);
-    },
-    'Unhandled': function () {
-        const speechOutput = 'Say start to start a new game.';
-        this.response.speak(speechOutput).listen(speechOutput);
-        this.emit(':responseReady');
-    },
+  LaunchRequest: function() {
+    this.handler.state = GAME_STATES.START;
+    this.emitWithState("StartGame", true);
+  },
+  "AMAZON.StartOverIntent": function() {
+    this.handler.state = GAME_STATES.START;
+    this.emitWithState("StartGame", true);
+  },
+  "AMAZON.HelpIntent": function() {
+    this.handler.state = GAME_STATES.HELP;
+    this.emitWithState("helpTheUser", true);
+  },
+  Unhandled: function() {
+    const speechOutput = "Say start to start a new game.";
+    this.response.speak(speechOutput).listen(speechOutput);
+    this.emit(":responseReady");
+  }
 };
 
 const startStateHandlers = Alexa.CreateStateHandler(GAME_STATES.START, {
@@ -144,9 +144,14 @@ const helpStateHandlers = Alexa.CreateStateHandler(GAME_STATES.HELP, {
     //  },
 });
 
-exports.handler = function (event, context) {
-    const alexa = Alexa.handler(event, context);
-    alexa.appId = APP_ID;
-    alexa.registerHandlers(newSessionHandlers, startStateHandlers, gameStateHandlers, helpStateHandlers);
-    alexa.execute();
+exports.handler = function(event, context) {
+  const alexa = Alexa.handler(event, context);
+  alexa.appId = APP_ID;
+  alexa.registerHandlers(
+    newSessionHandlers,
+    startStateHandlers,
+    gameStateHandlers,
+    helpStateHandlers
+  );
+  alexa.execute();
 };
