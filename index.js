@@ -3,11 +3,12 @@
 const Alexa = require('alexa-sdk');
 
 const GAME_STATES = {
-    START: '_STARTMODE',
+    START: '_STARTSTATE',
     GAME: '_GAMESTATE',
-    HELP: '_HELPMODE'
+    HELP: '_HELPSTATE'
 };
 
+const APP_NAME = 'The Last Coin';
 // TODO
 const APP_ID = undefined;
 
@@ -33,49 +34,29 @@ const newSessionHandlers = {
 
 const startStateHandlers = Alexa.CreateStateHandler(GAME_STATES.START, {
     'StartGame': function (newGame) {
-        // let speechOutput = newGame ? this.t('NEW_GAME_MESSAGE', this.t('GAME_NAME')) + this.t('WELCOME_MESSAGE', GAME_LENGTH.toString()) : '';
-        // // Select GAME_LENGTH questions for the game
-        // const translatedQuestions = this.t('QUESTIONS');
-        // const gameQuestions = populateGameQuestions(translatedQuestions);
-        // // Generate a random index for the correct answer, from 0 to 3
-        // const correctAnswerIndex = Math.floor(Math.random() * (ANSWER_COUNT));
-        // // Select and shuffle the answers for each question
-        // const roundAnswers = populateRoundAnswers(gameQuestions, 0, correctAnswerIndex, translatedQuestions);
-        // const currentQuestionIndex = 0;
-        // const spokenQuestion = Object.keys(translatedQuestions[gameQuestions[currentQuestionIndex]])[0];
-        // let repromptText = this.t('TELL_QUESTION_MESSAGE', '1', spokenQuestion);
+        let coinsTotal = 30;
 
-        // for (let i = 0; i < ANSWER_COUNT; i++) {
-        //     repromptText += `${i + 1}. ${roundAnswers[i]}. `;
-        // }
+        let intro = newGame ? "Welcome to The Last Coin. " : '';
+        let reprompt = `There are ${coinsTotal} coins in the jar. If you can take the last coin, you win. You may take up to three coins at once. How many would you like to take?`;
 
-        // speechOutput += repromptText;
+        this.response.cardRenderer(APP_NAME, reprompt);
+        this.response.speak(intro + reprompt)
+            .listen(reprompt);
 
-        // Object.assign(this.attributes, {
-        //     'speechOutput': repromptText,
-        //     'repromptText': repromptText,
-        //     'currentQuestionIndex': currentQuestionIndex,
-        //     'correctAnswerIndex': correctAnswerIndex + 1,
-        //     'questions': gameQuestions,
-        //     'score': 0,
-        //     'correctAnswerText': translatedQuestions[gameQuestions[currentQuestionIndex]][Object.keys(translatedQuestions[gameQuestions[currentQuestionIndex]])[0]][0],
-        // });
+        Object.assign(this.attributes, {
+            'coinsTotal': coinsTotal,
+            'coinsLeft': coinsTotal,
+            'reprompt': reprompt
+        });
 
-        // // Set the current state to game mode. The skill will now use handlers defined in gameStateHandlers
-        // this.handler.state = GAME_STATES.GAME;
-
-        // this.response.speak(speechOutput).listen(repromptText);
-        // this.response.cardRenderer(this.t('GAME_NAME'), repromptText);
-        // this.emit(':responseReady');
+        this.handler.state = GAME_STATES.GAME;
+        this.emit(':responseReady');
     },
 });
 
- const gameStateHandlers = Alexa.CreateStateHandler(GAME_STATES.GAME, {
+const gameStateHandlers = Alexa.CreateStateHandler(GAME_STATES.GAME, {
     //  'AnswerIntent': function () {
     //      handleUserGuess.call(this, false);
-    //  },
-    //  'DontKnowIntent': function () {
-    //      handleUserGuess.call(this, true);
     //  },
     //  'AMAZON.StartOverIntent': function () {
     //      this.handler.state = GAME_STATES.START;
@@ -107,9 +88,9 @@ const startStateHandlers = Alexa.CreateStateHandler(GAME_STATES.START, {
     //  'SessionEndedRequest': function () {
     //      console.log(`Session ended in game state: ${this.event.request.reason}`);
     //  },
- });
+});
 
- const helpStateHandlers = Alexa.CreateStateHandler(GAME_STATES.HELP, {
+const helpStateHandlers = Alexa.CreateStateHandler(GAME_STATES.HELP, {
     //  'helpTheUser': function (newGame) {
     //      const askMessage = newGame ? this.t('ASK_MESSAGE_START') : this.t('REPEAT_QUESTION_MESSAGE') + this.t('STOP_MESSAGE');
     //      const speechOutput = this.t('HELP_MESSAGE', GAME_LENGTH) + askMessage;
@@ -161,7 +142,7 @@ const startStateHandlers = Alexa.CreateStateHandler(GAME_STATES.START, {
     //  'SessionEndedRequest': function () {
     //      console.log(`Session ended in help state: ${this.event.request.reason}`);
     //  },
- });
+});
 
 exports.handler = function (event, context) {
     const alexa = Alexa.handler(event, context);
