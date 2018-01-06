@@ -1,0 +1,42 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "coin game",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AnswerIntent",
+          "slots": [
+            {
+              "name": "Answer",
+              "type": "AMAZON.NUMBER"
+            }
+          ],
+          "samples": [
+            "{Answer} coins",
+            "{Answer}",
+            "Take {Answer} coins",
+            "Take {Answer}",
+            "Grab {Answer} coins",
+            "Grab {Answer}",
+            "Give me {Answer} coins",
+            "Give me {Answer}",
+            "I want to take {Answer} coins",
+            "I want to take {Answer}"
+          ]
+        }
+      ]
+    }
+  }
+}
