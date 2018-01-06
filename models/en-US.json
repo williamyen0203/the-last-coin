@@ -1,7 +1,6 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "coin game",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -35,8 +34,32 @@
             "I want to take {Answer} coins",
             "I want to take {Answer}"
           ]
+        },
+        {
+          "name": "NoIntent",
+          "samples": [
+            "No",
+            "Nah",
+            "No thanks",
+            "Nope",
+            "No thank you"
+          ],
+          "slots": []
+        },
+        {
+          "name": "YesIntent",
+          "samples": [
+            "Yes",
+            "Yeah",
+            "Yep",
+            "Sure",
+            "Yes please",
+            "Yup"
+          ],
+          "slots": []
         }
-      ]
+      ],
+      "invocationName": "the coin game"
     }
   }
 }
