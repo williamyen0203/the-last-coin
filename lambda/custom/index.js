@@ -9,7 +9,12 @@ const GAME_STATES = {
 };
 
 const APP_NAME = 'The Last Coin';
-const APP_ID = 'amzn1.ask.skill.c122c60f-50a5-420a-9944-b6b0bb97cd1f';
+const APP_ID = null;
+
+const DIFFICULTY = {
+    EASY: '_EASY',
+    HARD: '_HARD'
+};
 
 const newSessionHandlers = {
     LaunchRequest: function () {
@@ -41,7 +46,11 @@ const startStateHandlers = Alexa.CreateStateHandler(GAME_STATES.START, {
         this.response.cardRenderer(APP_NAME, reprompt);
         this.response.speak(intro + reprompt).listen(reprompt);
 
-        Object.assign(this.attributes, {coinsTotal: coinsTotal, coinsLeft: coinsTotal});
+        Object.assign(this.attributes, {
+            coinsTotal: coinsTotal,
+            coinsLeft: coinsTotal,
+            difficulty: DIFFICULTY.EASY
+        });
 
         this.handler.state = GAME_STATES.GAME;
         this.emit(':responseReady');
@@ -104,7 +113,8 @@ function handleUserGuess() {
 
             Object.assign(this.attributes, {
                 coinsTotal: coinsTotal,
-                coinsLeft: currentCoins
+                coinsLeft: currentCoins,
+                difficulty: DIFFICULTY.EASY
             });
 
             speechOutput = `I take ${coinsToTake} coin`;
