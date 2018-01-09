@@ -1,3 +1,4 @@
+/* jslint es6 */
 'use strict';
 
 const Alexa = require('alexa-sdk');
@@ -26,7 +27,7 @@ const DIFFICULTY_CONFIG = {
         COINS_TOTAL: 40,
         COIN_LIMIT: 5
     }
-}
+};
 
 const newSessionHandlers = {
     LaunchRequest: function () {
@@ -105,15 +106,18 @@ function isAnswerSlotValid(intent) {
     const answerSlotIsInt = answerSlotFilled && !isNaN(parseInt(intent.slots.Answer.value, 10));
     return (
         answerSlotIsInt &&
-        parseInt(intent.slots.Answer.value, 10) <= Math.min(this.attributes['coinLimit'], this.attributes['coinsLeft']) && parseInt(intent.slots.Answer.value, 10) >= 1
+        parseInt(intent.slots.Answer.value, 10) <= Math.min(this.attributes.coinLimit, this.attributes.coinsLeft) && parseInt(intent.slots.Answer.value, 10) >= 1
     );
 }
 
 function calculateCoinsToTake() {
-    return Math.min(
-        Math.floor(Math.random() * this.attributes['coinLimit'] + 1),
-        this.attributes['coinsLeft']
-    );
+    let coinsToTake = Math.min(Math.floor(Math.random() * this.attributes.coinLimit + 1), this.attributes.coinsLeft);
+    let remainder = this.attributes.coinsLeft - (Math.floor(this.attributes.coinsLeft / (this.attributes.coinsLimit + 1)));
+
+    if (this.attributes.difficulty === DIFFICULTY.HARD && remainder !== 0) {
+        coinsToTake = remainder;
+    }
+    return coinsToTake;
 }
 
 function handleUserGuess() {
@@ -122,7 +126,7 @@ function handleUserGuess() {
 
     if (answerSlotValid) {
         const answer = parseInt(this.event.request.intent.slots.Answer.value, 10);
-        let coinsLeft = this.attributes['coinsLeft'];
+        let coinsLeft = this.attributes.coinsLeft;
 
         // check if user has won game
         if (answer === coinsLeft) {
@@ -136,9 +140,9 @@ function handleUserGuess() {
             coinsLeft -= answer;
         }
 
-        const coinsTotal = this.attributes['coinsTotal'];
-        const difficulty = this.attributes['difficulty'];
-        const coinLimit = this.attributes['coinLimit'];
+        const coinsTotal = this.attributes.coinsTotal;
+        const difficulty = this.attributes.difficulty;
+        const coinLimit = this.attributes.coinLimit;
 
         // check if Alexa has won the game
         if (coinsLeft <= coinLimit) {
@@ -168,10 +172,10 @@ function handleUserGuess() {
             this.response.speak(speechOutput).listen(speechOutput);
         }
     } else {
-        if (this.attributes['coinsLeft'] === 1) {
+        if (this.attributes.coinsLeft === 1) {
             speechOutput = 'There is only one coin left in the jar. How many coins do you want to take?';
         } else {
-            speechOutput = `Please say a number between 1 and ${Math.min(this.attributes['coinsLeft'], this.attributes['coinLimit'])}.`;
+            speechOutput = `Please say a number between 1 and ${Math.min(this.attributes.coinsLeft, this.attributes.coinLimit)}.`;
         }
 
         this.response.cardRenderer(APP_NAME, speechOutput);
@@ -191,8 +195,8 @@ const gameStateHandlers = Alexa.CreateStateHandler(GAME_STATES.GAME, {
     },
     'AMAZON.RepeatIntent': function () {
         this.response
-            .speak(getPrompt(this.attributes['coinsLeft']))
-            .listen(getPrompt(this.attributes['coinsLeft']));
+            .speak(getPrompt(this.attributes.coinsLeft))
+            .listen(getPrompt(this.attributes.coinsLeft));
         this.emit(':responseReady');
     },
     'AMAZON.StopIntent': function () {
@@ -201,10 +205,10 @@ const gameStateHandlers = Alexa.CreateStateHandler(GAME_STATES.GAME, {
     },
     Unhandled: function () {
         let speechOutput = '';
-        if (this.attributes['coinsLeft'] === 1) {
+        if (this.attributes.coinsLeft === 1) {
             speechOutput = 'There is only one coin left in the jar. How many coins do you want to take?';
         } else {
-            speechOutput = `Please say a number between 1 and ${Math.min(this.attributes['coinsLeft'], this.attributes['coinLimit'])}.`;
+            speechOutput = `Please say a number between 1 and ${Math.min(this.attributes.coinsLeft, this.attributes.coinLimit)}.`;
         }
         this.response.speak(speechOutput).listen(speechOutput);
         this.emit(':responseReady');
