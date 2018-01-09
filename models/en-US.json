@@ -16,12 +16,6 @@
         },
         {
           "name": "AnswerIntent",
-          "slots": [
-            {
-              "name": "Answer",
-              "type": "AMAZON.NUMBER"
-            }
-          ],
           "samples": [
             "{Answer} coins",
             "{Answer}",
@@ -33,7 +27,28 @@
             "Give me {Answer}",
             "I want to take {Answer} coins",
             "I want to take {Answer}"
+          ],
+          "slots": [
+            {
+              "name": "Answer",
+              "type": "AMAZON.NUMBER"
+            }
           ]
+        },
+        {
+          "name": "EasyIntent",
+          "samples": [
+            "Easy"
+          ],
+          "slots": []
+        },
+        {
+          "name": "HardIntent",
+          "samples": [
+            "Hard",
+            "Difficult"
+          ],
+          "slots": []
         },
         {
           "name": "NoIntent",
