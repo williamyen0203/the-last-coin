@@ -110,9 +110,9 @@ function isAnswerSlotValid(intent) {
     );
 }
 
-function calculateCoinsToTake() {
-    let coinsToTake = Math.min(Math.floor(Math.random() * this.attributes.coinLimit + 1), this.attributes.coinsLeft);
-    let remainder = this.attributes.coinsLeft % (this.attributes.coinLimit + 1);
+function calculateCoinsToTake(coinsLeft) {
+    let coinsToTake = Math.min(Math.floor(Math.random() * this.attributes.coinLimit + 1), coinsLeft);
+    let remainder = coinsLeft % (this.attributes.coinLimit + 1);
 
     if (this.attributes.difficulty === DIFFICULTY.HARD && remainder !== 0) {
         return remainder;
@@ -156,7 +156,7 @@ function handleUserGuess() {
             this.handler.state = GAME_STATES.REPLAY;
             this.emit(':responseReady');
         } else {
-            const coinsToTake = calculateCoinsToTake.call(this);
+            const coinsToTake = calculateCoinsToTake.call(this, coinsLeft);
             const currentCoins = coinsLeft - coinsToTake;
             Object.assign(this.attributes, {
                 coinsTotal: coinsTotal,
