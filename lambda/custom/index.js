@@ -70,8 +70,7 @@ const setupStateHandlers = Alexa.CreateStateHandler(GAME_STATES.SETUP, {
         this.response.speak(prompt).listen(prompt);
 
         Object.assign(this.attributes, {
-            coinsTotal: DIFFICULTY_CONFIG.EASY.COINS_TOTAL,
-            coinsLeft: DIFFICULTY_CONFIG.EASY.COINS_TOTAL,
+            coinsLeft: DIFFICULTY_CONFIG.EASY.COINS_TOTAL + Math.floor(Math.random() * 10) - 5,
             coinLimit: DIFFICULTY_CONFIG.EASY.COIN_LIMIT,
             difficulty: DIFFICULTY.EASY
         });
@@ -86,8 +85,7 @@ const setupStateHandlers = Alexa.CreateStateHandler(GAME_STATES.SETUP, {
         this.response.speak(prompt).listen(prompt);
 
         Object.assign(this.attributes, {
-            coinsTotal: DIFFICULTY_CONFIG.HARD.COINS_TOTAL,
-            coinsLeft: DIFFICULTY_CONFIG.HARD.COINS_TOTAL,
+            coinsLeft: DIFFICULTY_CONFIG.HARD.COINS_TOTAL + Math.floor(Math.random() * 10) - 5,
             coinLimit: DIFFICULTY_CONFIG.HARD.COIN_LIMIT,
             difficulty: DIFFICULTY.HARD
         });
@@ -141,7 +139,6 @@ function handleUserGuess() {
             coinsLeft -= answer;
         }
 
-        const coinsTotal = this.attributes.coinsTotal;
         const difficulty = this.attributes.difficulty;
         const coinLimit = this.attributes.coinLimit;
 
@@ -159,7 +156,6 @@ function handleUserGuess() {
             const coinsToTake = calculateCoinsToTake.call(this, coinsLeft);
             const currentCoins = coinsLeft - coinsToTake;
             Object.assign(this.attributes, {
-                coinsTotal: coinsTotal,
                 coinsLeft: currentCoins,
                 coinLimit: coinLimit,
                 difficulty: difficulty
