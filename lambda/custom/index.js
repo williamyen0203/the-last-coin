@@ -112,12 +112,13 @@ function isAnswerSlotValid(intent) {
 
 function calculateCoinsToTake() {
     let coinsToTake = Math.min(Math.floor(Math.random() * this.attributes.coinLimit + 1), this.attributes.coinsLeft);
-    let remainder = this.attributes.coinsLeft - (Math.floor(this.attributes.coinsLeft / (this.attributes.coinsLimit + 1)));
+    let remainder = this.attributes.coinsLeft % (this.attributes.coinLimit + 1);
 
     if (this.attributes.difficulty === DIFFICULTY.HARD && remainder !== 0) {
-        coinsToTake = remainder;
+        return remainder;
+    } else {
+        return coinsToTake;
     }
-    return coinsToTake;
 }
 
 function handleUserGuess() {
