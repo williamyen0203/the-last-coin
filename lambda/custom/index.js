@@ -259,10 +259,12 @@ const gameStateHandlers = Alexa.CreateStateHandler(GAME_STATES.GAME, {
       speechOutput =
         "There is only one coin left in the jar. How many coins do you want to take?";
     } else {
-      speechOutput = `Please say a number between 1 and ${Math.min(
+      speechOutput = `There are ${
+        this.attributes.coinsLeft
+      } coins left in the jar. Please say a number between 1 and ${Math.min(
         this.attributes.coinsLeft,
         this.attributes.coinLimit
-      )}.`;
+      )} to take that many coins from the jar.`;
     }
     this.response.speak(speechOutput).listen(speechOutput);
     this.emit(":responseReady");
@@ -281,10 +283,12 @@ const gameStateHandlers = Alexa.CreateStateHandler(GAME_STATES.GAME, {
       speechOutput =
         "There is only one coin left in the jar. How many coins do you want to take?";
     } else {
-      speechOutput = `Please say a number between 1 and ${Math.min(
+      speechOutput = `There are ${
+        this.attributes.coinsLeft
+      } coins left in the jar. Please say a number between 1 and ${Math.min(
         this.attributes.coinsLeft,
         this.attributes.coinLimit
-      )}.`;
+      )} to take that many coins from the jar.`;
     }
     this.response.speak(speechOutput).listen(speechOutput);
     this.emit(":responseReady");
@@ -304,7 +308,7 @@ const replayStateHandlers = Alexa.CreateStateHandler(GAME_STATES.REPLAY, {
     this.emit(":responseReady");
   },
   "AMAZON.HelpIntent": function() {
-    const speechOutput = "Please say yes or no.";
+    const speechOutput = "Would you like to play again? Please say yes or no.";
     this.response.speak(speechOutput).listen(speechOutput);
     this.emit(":responseReady");
   },
