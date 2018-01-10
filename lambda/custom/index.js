@@ -8,6 +8,7 @@ const Alexa = require("alexa-sdk");
 const GAME_STATES = {
   START: "_STARTSTATE",
   SETUP: "_SETUPSTATE",
+  HELP: "_HELPSTATE",
   GAME: "_GAMESTATE",
   REPLAY: "_REPLAYSTATE"
 };
@@ -36,15 +37,16 @@ const newSessionHandlers = {
     this.handler.state = GAME_STATES.START;
     this.emitWithState("StartGame", true);
   },
-  "AMAZON.StartOverIntent": function() {
+  "AMAZON.NewGameIntent": function() {
     this.handler.state = GAME_STATES.START;
     this.emitWithState("StartGame", true);
   },
   "AMAZON.HelpIntent": function() {
     const speechOutput =
-      "The Last Coin is a math game where you play against Alexa to grab the last coin from the jar. Please say start to start a new game.";
+      'The Last Coin is a math game where you play against Alexa to grab the last coin from the jar. Please say "new game" to start a new game.';
     this.response.speak(speechOutput).listen(speechOutput);
-    this.emit(":responseReady");
+    this.handler.state = GAME_STATES.HELP;
+    this.emitWithState(":responseReady");
   },
   "AMAZON.StopIntent": function() {
     this.response.speak("Hope to see you again!");
@@ -55,8 +57,9 @@ const newSessionHandlers = {
     this.emit(":responseReady");
   },
   Unhandled: function() {
-    const speechOutput = "Say start to start a new game.";
+    const speechOutput = 'Say "new game" to start a new game.';
     this.response.speak(speechOutput).listen(speechOutput);
+    this.handler.state = GAME_STATES.HELP;
     this.emit(":responseReady");
   }
 };
@@ -243,7 +246,7 @@ const gameStateHandlers = Alexa.CreateStateHandler(GAME_STATES.GAME, {
   AnswerIntent: function() {
     handleUserGuess.call(this);
   },
-  "AMAZON.StartOverIntent": function() {
+  "AMAZON.NewGameIntent": function() {
     this.handler.state = GAME_STATES.START;
     this.emitWithState("StartGame", false);
   },
@@ -264,7 +267,7 @@ const gameStateHandlers = Alexa.CreateStateHandler(GAME_STATES.GAME, {
       } coins left in the jar. Please say a number between 1 and ${Math.min(
         this.attributes.coinsLeft,
         this.attributes.coinLimit
-      )} to take that many coins from the jar.`;
+      )} to take that many coins from the jar. You can also say \"new game\" to start over.`;
     }
     this.response.speak(speechOutput).listen(speechOutput);
     this.emit(":responseReady");
@@ -327,6 +330,35 @@ const replayStateHandlers = Alexa.CreateStateHandler(GAME_STATES.REPLAY, {
   }
 });
 
+const helpStateHandlers = Alexa.CreateStateHandler(GAME_STATES.HELP, {
+  NewGameIntent: function() {
+    this.handler.state = GAME_STATES.START;
+    this.emitWithState("StartGame", true);
+  },
+  "AMAZON.HelpIntent": function() {
+    const speechOutput =
+      'The Last Coin is a math game where you play against Alexa to grab the last coin from the jar. Please say "new game" to start a new game.';
+    this.response.speak(speechOutput).listen(speechOutput);
+    this.handler.state = GAME_STATES.HELP;
+    this.emit(":responseReady");
+  },
+  "AMAZON.StopIntent": function() {
+    this.response.speak("Hope to see you again!");
+    this.emit(":responseReady");
+  },
+  "AMAZON.CancelIntent": function() {
+    this.response.speak("Hope to see you again!");
+    this.emit(":responseReady");
+  },
+  Unhandled: function() {
+    const speechOutput =
+      'The Last Coin is a math game where you play against Alexa to grab the last coin from the jar. Please say "new game" to start a new game.';
+    this.response.speak(speechOutput).listen(speechOutput);
+    this.handler.state = GAME_STATES.HELP;
+    this.emit(":responseReady");
+  }
+});
+
 exports.handler = function(event, context) {
   const alexa = Alexa.handler(event, context);
   alexa.appId = APP_ID;
@@ -335,7 +367,8 @@ exports.handler = function(event, context) {
     setupStateHandlers,
     startStateHandlers,
     gameStateHandlers,
-    replayStateHandlers
+    replayStateHandlers,
+    helpStateHandlers
   );
   alexa.execute();
 };
