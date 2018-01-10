@@ -54,7 +54,7 @@ const startStateHandlers = Alexa.CreateStateHandler(GAME_STATES.START, {
         let intro = newGame ? 'Welcome to The Last Coin. ' : '';
         intro += 'What difficulty would you like to play in? Easy or hard?';
 
-        this.response.cardRenderer(APP_NAME);
+        this.response.cardRenderer(APP_NAME, intro);
         this.response.speak(intro).listen(intro);
 
         this.handler.state = GAME_STATES.SETUP;
@@ -64,13 +64,15 @@ const startStateHandlers = Alexa.CreateStateHandler(GAME_STATES.START, {
 
 const setupStateHandlers = Alexa.CreateStateHandler(GAME_STATES.SETUP, {
     EasyIntent: function() {
-        let prompt = `There are ${DIFFICULTY_CONFIG.EASY.COINS_TOTAL} coins in the jar. If you can take the last coin, you win. You may take up to ${DIFFICULTY_CONFIG.EASY.COIN_LIMIT} coins at once. How many would you like to take?`;
+        const startingCoins = DIFFICULTY_CONFIG.EASY.COINS_TOTAL + Math.floor(Math.random() * 10) - 5;
+
+        let prompt = `There are ${startingCoins} coins in the jar. If you can take the last coin, you win. You may take up to ${DIFFICULTY_CONFIG.EASY.COIN_LIMIT} coins at once. How many would you like to take?`;
 
         this.response.cardRenderer(APP_NAME, prompt);
         this.response.speak(prompt).listen(prompt);
 
         Object.assign(this.attributes, {
-            coinsLeft: DIFFICULTY_CONFIG.EASY.COINS_TOTAL + Math.floor(Math.random() * 10) - 5,
+            coinsLeft: startingCoins,
             coinLimit: DIFFICULTY_CONFIG.EASY.COIN_LIMIT,
             difficulty: DIFFICULTY.EASY
         });
@@ -79,13 +81,15 @@ const setupStateHandlers = Alexa.CreateStateHandler(GAME_STATES.SETUP, {
         this.emit(':responseReady');
     },
     HardIntent: function() {
-        let prompt = `There are ${DIFFICULTY_CONFIG.HARD.COINS_TOTAL} coins in the jar. If you can take the last coin, you win. You may take up to ${DIFFICULTY_CONFIG.HARD.COIN_LIMIT} coins at once. How many would you like to take?`;
+        const startingCoins = DIFFICULTY_CONFIG.HARD.COINS_TOTAL + Math.floor(Math.random() * 10) - 5;
+
+        let prompt = `There are ${startingCoins} coins in the jar. If you can take the last coin, you win. You may take up to ${DIFFICULTY_CONFIG.HARD.COIN_LIMIT} coins at once. How many would you like to take?`;
 
         this.response.cardRenderer(APP_NAME, prompt);
         this.response.speak(prompt).listen(prompt);
 
         Object.assign(this.attributes, {
-            coinsLeft: DIFFICULTY_CONFIG.HARD.COINS_TOTAL + Math.floor(Math.random() * 10) - 5,
+            coinsLeft: startingCoins,
             coinLimit: DIFFICULTY_CONFIG.HARD.COIN_LIMIT,
             difficulty: DIFFICULTY.HARD
         });
