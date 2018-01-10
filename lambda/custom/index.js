@@ -96,6 +96,11 @@ const setupStateHandlers = Alexa.CreateStateHandler(GAME_STATES.SETUP, {
 
         this.handler.state = GAME_STATES.GAME;
         this.emit(':responseReady');
+    },
+    Unhandled: function () {
+        let speechOutput = 'Please choose a difficulty: easy or hard?';
+        this.response.speak(speechOutput).listen(speechOutput);
+        this.emit(':responseReady');
     }
 });
 
